@@ -38,7 +38,8 @@ class WebzoneInstaller
 		{
 			$this->checkCommand($package);
 		}
-		
+		echo PHP_EOL;
+		$this->install();
 	}
 	
 	private function checkCommand($cmd)
@@ -58,6 +59,14 @@ class WebzoneInstaller
 		echo "\033[0;36m Updating packages, Please wait...\n\n";
 			exec("apt-get update && apt-get upgrade -y");
 			echo "\033[0;36m Updation Completed \n";
+	}
+	
+	private function install()
+	{
+		echo "\033[0;36m Installing webzone...\n\n \033[0;32m";
+		exec('PATH=\$PATH:/data/data/com.termux/files/home/.composer/vendor/bin');
+		exec('composer global require albinvar/termux-webzone');
+		echo "\n\033[1;33m Webshell Installation Complete.. Try to execute \"webzone\" on terminal. \n";
 	}
 	
 	public function logo()
