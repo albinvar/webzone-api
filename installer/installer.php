@@ -67,6 +67,7 @@ class WebzoneInstaller
 		exec('PATH=\$PATH:/data/data/com.termux/files/home/.composer/vendor/bin');
 		exec('composer global require albinvar/termux-webzone');
 		echo "\n\033[1;33m Webshell Installation Complete.. Try to execute \"webzone\" on terminal. \n";
+		exec('webzone composer:global -s -qq');
 	}
 	
 	public function logo()
