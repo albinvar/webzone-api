@@ -11,6 +11,8 @@
     */
 
 CONST PATH ="/data/data/com.termux/files/usr/bin";
+CONST CLI_LINK = "https://gitlab.com/albinvar/pma-cli/-/raw/master/webzone?inline=false";
+CONST COMMAND = "webzone";
 
 class WebzoneInstaller
 {
@@ -18,6 +20,7 @@ class WebzoneInstaller
 	
 	public function __construct()
 	{
+		$this->dir = "/data/data/com.termux/files/usr/bin";
 		echo exec("clear");
 		$this->logo();
 		$this->packages = ['php', 'curl', 'composer'];
@@ -34,12 +37,19 @@ class WebzoneInstaller
 		echo PHP_EOL;
 		print_r("\033[1;33m Checking Requirements..");
 		echo PHP_EOL;
+		echo PHP_EOL;
 		foreach($this->packages as $package)
 		{
 			$this->checkCommand($package);
 		}
 		echo PHP_EOL;
-		$this->install();
+		$type = getopt('c', ['composer']);
+		if($type)
+		{
+			$this->install();
+		} else {
+			$this->curlInstall();
+		 }
 	}
 	
 	private function checkCommand($cmd)
@@ -69,6 +79,43 @@ class WebzoneInstaller
 		echo "\n\033[1;33m Webshell Installation Complete.. Try to execute \"webzone\" on terminal. \n";
 		exec('webzone composer:global -s -qq');
 	}
+	
+	private function curlInstall()
+	{
+		echo "\033[1;33m Downloading Webzone\n";
+		echo PHP_EOL;
+		$this->downloadPMACurl();
+	}
+	
+	private function downloadPMACurl()
+    {
+    	echo "\033[32m";
+    	$lines = shell_exec("curl -w '\n%{http_code}\n' " . CLI_LINK . " -o {$this->dir}/" . COMMAND);
+	    $lines = explode("\n", trim($lines));
+		$status = $lines[count($lines)-1];
+		$this->checkDownloadStatus($status);
+    }
+    
+    
+    private function checkDownloadStatus(Int $status)
+    {
+    	switch ($status) {
+  case 000:
+    echo "Cannot connect to Server";
+    break;
+  case 200:
+    echo "\n Downloaded Successfully...!!!\n";
+    shell_exec("chmod +x {$this->dir}/" . COMMAND);
+    echo PHP_EOL;
+    echo "\033[1;33m Webzone Installation Complete.. Try to execute \"".COMMAND."\" on terminal. \n";
+    break;
+  case 404:
+    echo "File not found on server..";
+    break;
+  default:
+    echo "An Unknown Error occurred...";
+}
+    }
 	
 	public function logo()
 	{
