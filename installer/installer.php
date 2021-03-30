@@ -16,7 +16,8 @@ CONST COMMAND = "webzone";
 
 class WebzoneInstaller
 {
-	//properties
+	private $dir;
+	private $packages;
 	
 	public function __construct()
 	{
