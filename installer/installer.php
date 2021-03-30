@@ -26,6 +26,21 @@ class WebzoneInstaller
 		$this->packages = ['php', 'curl', 'composer'];
 	}
 	
+	public function logo()
+	{
+		echo PHP_EOL;
+		echo PHP_EOL;
+		echo '     _      __    __                       ____         __       ____       ' . PHP_EOL;
+		echo '    | | /| / /__ / /  ___ ___  ___  ___   /  _/__  ___ / /____ _/ / /__ ____' . PHP_EOL;
+		echo '    | |/ |/ / -_) _ \/_ // _ \/ _ \/ -_) _/ // _ \(_-</ __/ _ `/ / / -_) __/' . PHP_EOL;
+		echo '    |__/|__/\__/_.__//__/\___/_//_/\__/ /___/_//_/___/\__/\_,_/_/_/\__/_/   ' . PHP_EOL;
+		echo PHP_EOL;
+		echo PHP_EOL;
+		echo "\033[32m                             Version 1.0 \033[0m - stable release \n" . PHP_EOL;
+		echo PHP_EOL;
+                                                                  
+	}
+	
 	public function checkInstallations()
 	{
 		echo PHP_EOL;
@@ -130,21 +145,6 @@ class WebzoneInstaller
     echo "An Unknown Error occurred...";
 }
     }
-	
-	public function logo()
-	{
-		echo PHP_EOL;
-		echo PHP_EOL;
-		echo '     _      __    __                       ____         __       ____       ' . PHP_EOL;
-		echo '    | | /| / /__ / /  ___ ___  ___  ___   /  _/__  ___ / /____ _/ / /__ ____' . PHP_EOL;
-		echo '    | |/ |/ / -_) _ \/_ // _ \/ _ \/ -_) _/ // _ \(_-</ __/ _ `/ / / -_) __/' . PHP_EOL;
-		echo '    |__/|__/\__/_.__//__/\___/_//_/\__/ /___/_//_/___/\__/\_,_/_/_/\__/_/   ' . PHP_EOL;
-		echo PHP_EOL;
-		echo PHP_EOL;
-		echo "\033[32m                             Version 1.0 \033[0m - cli version \n" . PHP_EOL;
-		echo PHP_EOL;
-                                                                  
-	}
 }
 
 
