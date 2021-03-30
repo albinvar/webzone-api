@@ -52,6 +52,20 @@ class WebzoneInstaller
 		 }
 	}
 	
+	public function checkOs()
+	{
+		$response = shell_exec('echo $PREFIX | grep -o "com.termux"');
+		if(!empty($response) && $response == "com.termux\n")
+		{
+			$this->checkInstallations();
+		} else {
+			echo PHP_EOL;
+		    echo "\033[1;31m We are sorry, but Webzone is supported for Termux only.\n";
+			echo PHP_EOL;
+			die();
+		}
+	}
+	
 	private function checkCommand($cmd)
 	{
 		if(file_exists(PATH."/{$cmd}"))
@@ -136,6 +150,6 @@ class WebzoneInstaller
 
 //object
 $installer = new WebzoneInstaller();
-$installer->checkInstallations();
+$installer->checkOs();
 
 ?>
