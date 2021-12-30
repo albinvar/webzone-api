@@ -6,12 +6,12 @@
     | Webzone Installer
     |--------------------------------------------------------------------------
     |
-    | The Installer will install latest version of termux webzone cli.
+    | The Installer will install the latest version of termux webzone cli.
     |
     */
 
 CONST PATH ="/data/data/com.termux/files/usr/bin";
-CONST CLI_LINK = "https://gitlab.com/albinvar/pma-cli/-/raw/master/webzone?inline=false";
+CONST CLI_LINK = "https://github.com/albinvar/termux-webzone/raw/main/builds/webzone";
 CONST COMMAND = "webzone";
 
 class WebzoneInstaller
