@@ -10,7 +10,7 @@
     |
     */
 
-CONST INSTALLER_VERSION = "1.0";
+CONST INSTALLER_VERSION = "2.0";
 CONST PATH ="/data/data/com.termux/files/usr/bin";
 CONST CLI_LINK = "https://github.com/albinvar/termux-webzone/raw/main/builds/webzone";
 CONST COMMAND = "webzone";
@@ -234,4 +234,8 @@ if($installer->checkOs())
 // launches the installation process with the predefined installation method.
 $installer->install();
 
+/*
+ * Created by @albinvar
+ *
+ */
 ?>
