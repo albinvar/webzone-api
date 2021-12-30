@@ -58,6 +58,8 @@ class WebzoneInstaller
 	}
 
     /**
+     * Checks all prerequisites for installation of webzone.
+     *
      * @return void
      */
     public function checkInstallations()
@@ -117,6 +119,8 @@ class WebzoneInstaller
 	}
 
     /**
+     * Updates all packages in clients machine using apt.
+     *
      * @return void
      */
     private function updatePackages()
@@ -140,6 +144,11 @@ class WebzoneInstaller
         }
     }
 
+    /**
+     * Installation of project using composer.
+     *
+     * @return void
+     */
     private function composerInstall()
 	{
 		echo "\033[0;36m Installing webzone...\n\n \033[0;32m";
@@ -150,6 +159,9 @@ class WebzoneInstaller
 	}
 
     /**
+     * Launches normal installation process.
+     * latest version of phar/build file is downloaded from GitHub repository.
+     *
      * @return void
      */
     private function normalInstall()
@@ -160,12 +172,14 @@ class WebzoneInstaller
 	}
 
     /**
+     * Downloading using curl package installed in clients machine.
+     *
      * @return void
      */
     private function downloadPMACurl()
     {
     	echo "\033[32m";
-    	$lines = shell_exec("curl -w '\n%{http_code}\n' " . CLI_LINK . " -o $this->dir/" . COMMAND);
+    	$lines = shell_exec("curl --location --remote-header-name --remote-name -w '\n%{http_code}\n' " . CLI_LINK . " -o $this->dir/" . COMMAND);
 	    $lines = explode("\n", trim($lines));
 		$status = $lines[count($lines)-1];
 		$this->checkDownloadStatus($status);
@@ -173,6 +187,8 @@ class WebzoneInstaller
 
 
     /**
+     * Checks download status and shows responses based on exceptions if any error occurs.
+     *
      * @param Int $status
      * @return void
      */
@@ -203,6 +219,8 @@ class WebzoneInstaller
  */
 $installer = new WebzoneInstaller();
 
+
+// checks if the client's os is termux.
 if($installer->checkOs())
 {
     $installer->checkInstallations();
@@ -213,6 +231,7 @@ if($installer->checkOs())
     exit(1);
 }
 
+// launches the installation process with the predefined installation method.
 $installer->install();
 
 ?>
