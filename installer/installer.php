@@ -12,7 +12,7 @@
 
 CONST INSTALLER_VERSION = "2.0";
 CONST PATH ="/data/data/com.termux/files/usr/bin";
-CONST CLI_LINK = "https://github.com/albinvar/termux-webzone/raw/main/builds/webzone";
+CONST CLI_LINK = "https://raw.githubusercontent.com/albinvar/termux-webzone/main/builds/webzone";
 CONST COMMAND = "webzone";
 
 CONST INSTALLATION_NORMAL_MODE = 0;
