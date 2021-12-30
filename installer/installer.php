@@ -10,24 +10,39 @@
     |
     */
 
+CONST INSTALLER_VERSION = "1.0";
 CONST PATH ="/data/data/com.termux/files/usr/bin";
 CONST CLI_LINK = "https://github.com/albinvar/termux-webzone/raw/main/builds/webzone";
 CONST COMMAND = "webzone";
 
+CONST INSTALLATION_NORMAL_MODE = 0;
+CONST INSTALLATION_COMPOSER_MODE = 1;
+
 class WebzoneInstaller
 {
-	private $dir;
-	private $packages;
-	
-	public function __construct()
+	protected string $dir;
+
+	protected array $packages;
+
+    private int $installationMode;
+
+    /**
+     *
+     */
+    public function __construct()
 	{
 		$this->dir = "/data/data/com.termux/files/usr/bin";
 		echo exec("clear");
 		$this->logo();
 		$this->packages = ['php', 'curl', 'composer'];
 	}
-	
-	public function logo()
+
+    /**
+     * Basic landing interface with ascii logo.
+     *
+     * @return void
+     */
+    public function logo()
 	{
 		echo PHP_EOL;
 		echo PHP_EOL;
@@ -37,96 +52,130 @@ class WebzoneInstaller
 		echo '    |__/|__/\__/_.__//__/\___/_//_/\__/ /___/_//_/___/\__/\_,_/_/_/\__/_/   ' . PHP_EOL;
 		echo PHP_EOL;
 		echo PHP_EOL;
-		echo "\033[32m                             Version 1.0 \033[0m - stable release \n" . PHP_EOL;
+		echo "\033[32m                             Version ". INSTALLER_VERSION ." \033[0m - stable release \n" . PHP_EOL;
 		echo PHP_EOL;
                                                                   
 	}
-	
-	public function checkInstallations()
+
+    /**
+     * @return void
+     */
+    public function checkInstallations()
 	{
-		echo PHP_EOL;
-		echo PHP_EOL;
+		echo PHP_EOL . PHP_EOL;
 		print_r("\033[1;33m Checking installations");
-		echo PHP_EOL;
-		echo PHP_EOL;
+        echo PHP_EOL . PHP_EOL;
 		$this->updatePackages();
 		echo PHP_EOL;
 		print_r("\033[1;33m Checking Requirements..");
-		echo PHP_EOL;
-		echo PHP_EOL;
+        echo PHP_EOL . PHP_EOL;
+
 		foreach($this->packages as $package)
 		{
 			$this->checkCommand($package);
 		}
 		echo PHP_EOL;
-		$type = getopt('c', ['composer']);
-		if($type)
+
+		if(! getopt('c', ['composer']))
 		{
-			$this->install();
+            $this->installationMode = INSTALLATION_NORMAL_MODE;
 		} else {
-			$this->curlInstall();
+            $this->installationMode = INSTALLATION_COMPOSER_MODE;
 		 }
 	}
-	
-	public function checkOs()
-	{
+
+    /**
+     * Checks if the operating system is termux and abort if not suppoerted with exit code 1
+     *
+     * @return bool
+     */
+    public function checkOs(): bool
+    {
+        //checks if the os is termux.
 		$response = shell_exec('echo $PREFIX | grep -o "com.termux"');
-		if(!empty($response) && $response == "com.termux\n")
-		{
-			$this->checkInstallations();
-		} else {
-			echo PHP_EOL;
-		    echo "\033[1;31m We are sorry, but Webzone is supported for Termux only.\n";
-			echo PHP_EOL;
-			die();
-		}
+
+        //abort if not termux.
+		return !empty($response) && ($response == "com.termux\n");
 	}
-	
-	private function checkCommand($cmd)
+
+    /**
+     * Basically checks if a command/package is installed or not.
+     *
+     * @param $cmd
+     * @return void
+     */
+    private function checkCommand($cmd)
 	{
-		if(file_exists(PATH."/{$cmd}"))
+		if(file_exists(PATH."/$cmd"))
 		{
-			echo "\033[32m   [*] {$cmd} is installed\n";
+			echo "\033[32m   [*] $cmd is installed\n";
 		} else {
-			echo "\033[0;32m   [*] {$cmd} is not installed. Installing {$cmd}.....\n";
-			exec("apt-get install {$cmd} -q");
-			echo "\033[0;32m   [*] {$cmd} is installed\n";
+			echo "\033[0;32m   [*] $cmd is not installed. Installing $cmd.....\n";
+			exec(sprintf("apt-get install %s -q", $cmd));
+			echo "\033[0;32m   [*] $cmd is installed\n";
 		}
 	}
-	
-	private function updatePackages()
+
+    /**
+     * @return void
+     */
+    private function updatePackages()
 	{
 		echo "\033[0;36m Updating packages, Please wait...\n\n";
 			exec("apt-get update && apt-get upgrade -y");
-			echo "\033[0;36m Updation Completed \n";
+			echo "\033[0;36m Updation completed \n";
 	}
-	
-	private function install()
+
+    /**
+     * @return void
+     */
+    public function install()
+    {
+        if($this->installationMode == INSTALLATION_NORMAL_MODE)
+        {
+            $this->normalInstall();
+        } elseif($this->installationMode == INSTALLATION_COMPOSER_MODE)
+        {
+            $this->composerInstall();
+        }
+    }
+
+    private function composerInstall()
 	{
 		echo "\033[0;36m Installing webzone...\n\n \033[0;32m";
 		exec('PATH=\$PATH:/data/data/com.termux/files/home/.composer/vendor/bin');
 		exec('composer global require albinvar/termux-webzone');
-		echo "\n\033[1;33m Webshell Installation Complete.. Try to execute \"webzone\" on terminal. \n";
+		echo "\n\033[1;33m Webzone Installation Complete.. Try to execute \"webzone\" on terminal. \n";
 		exec('webzone composer:global -s -qq');
 	}
-	
-	private function curlInstall()
+
+    /**
+     * @return void
+     */
+    private function normalInstall()
 	{
 		echo "\033[1;33m Downloading Webzone\n";
 		echo PHP_EOL;
 		$this->downloadPMACurl();
 	}
-	
-	private function downloadPMACurl()
+
+    /**
+     * @return void
+     */
+    private function downloadPMACurl()
     {
     	echo "\033[32m";
-    	$lines = shell_exec("curl -w '\n%{http_code}\n' " . CLI_LINK . " -o {$this->dir}/" . COMMAND);
+    	$lines = shell_exec("curl -w '\n%{http_code}\n' " . CLI_LINK . " -o $this->dir/" . COMMAND);
 	    $lines = explode("\n", trim($lines));
 		$status = $lines[count($lines)-1];
 		$this->checkDownloadStatus($status);
     }
-    
-    
+
+
+    /**
+     * @param Int $status
+     * @return void
+     */
     private function checkDownloadStatus(Int $status)
     {
     	switch ($status) {
@@ -135,7 +184,7 @@ class WebzoneInstaller
     break;
   case 200:
     echo "\n Downloaded Successfully...!!!\n";
-    shell_exec("chmod +x {$this->dir}/" . COMMAND);
+    shell_exec("chmod +x $this->dir/" . COMMAND);
     echo PHP_EOL;
     echo "\033[1;33m Webzone Installation Complete.. Try to execute \"".COMMAND."\" on terminal. \n";
     break;
@@ -148,9 +197,22 @@ class WebzoneInstaller
     }
 }
 
-
-//object
+/*
+ * Creates an instance of WebzoneInstaller.
+ *
+ */
 $installer = new WebzoneInstaller();
-$installer->checkOs();
+
+if($installer->checkOs())
+{
+    $installer->checkInstallations();
+} else {
+    echo PHP_EOL;
+    echo "\033[1;31m We are sorry, but Webzone is supported for Termux only.\n";
+    echo PHP_EOL;
+    exit(1);
+}
+
+$installer->install();
 
 ?>
