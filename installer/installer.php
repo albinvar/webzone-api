@@ -179,7 +179,7 @@ class WebzoneInstaller
     private function downloadPMACurl()
     {
     	echo "\033[32m";
-    	$lines = shell_exec("curl --location --remote-header-name --remote-name -w '\n%{http_code}\n' " . CLI_LINK . " -o $this->dir/" . COMMAND);
+    	$lines = shell_exec("curl --location --remote-header-name --remote-name -w '\n%{http_code}\n' " . CLI_LINK . " -o {$this->dir}/" . COMMAND);
 	    $lines = explode("\n", trim($lines));
 		$status = $lines[count($lines)-1];
 		$this->checkDownloadStatus($status);
